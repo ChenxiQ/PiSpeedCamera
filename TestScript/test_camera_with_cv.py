@@ -11,5 +11,8 @@ time.sleep(0.1)
 camera.capture(rawCapture, format="bgr")
 image = rawCapture.array
 
-cv2.imshow("Image", image)
-cv2.waitKey(0)
+style = "%Y-%m-%d_%H:%M:%S"
+captureTime = str(time.strftime(style, time.localtime(time.time())))
+imagePath = "/home/pi/PiSpeedCamera/PiCameraImage/" + captureTime + ".jpg"
+
+cv2.imwrite(imagePath, image)
