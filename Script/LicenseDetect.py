@@ -3,11 +3,16 @@ import numpy as np
 import imutils
 
 def licenseDetect(captureTime, imagePath):
+    croppedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "Cropped.jpg"
+    noiseReducedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "NoiseReduced.jpg"
+    edgedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "Edged.jpg"
+
     img = cv2.imread(imagePath)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
     bfilter = cv2.bilateralFilter(gray, 11, 17, 17) # Noise reduction
+    cv2.imwrite(noiseReducedImagePath, bfilter)
     edged = cv2.Canny(bfilter, 30, 200) # Edge detection
+    cv2.imwrite(edgedImagePath, edged)
 
     keypoints = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     contours = imutils.grab_contours(keypoints)
@@ -28,9 +33,10 @@ def licenseDetect(captureTime, imagePath):
     (x1, y1) = (np.min(x), np.min(y))
     (x2, y2) = (np.max(x), np.max(y))
     cropped_image = gray[x1:x2+1, y1:y2+1]
-
-    croppedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "Cropped.jpg"
-
     cv2.imwrite(croppedImagePath, cropped_image)
 
     return captureTime, croppedImagePath
+
+licenseDetect("2021-11-30_19:16:20", "/home/pi/PiSpeedCamera/TestImag/test_plate_2.jpg")
+
+# tesseract /home/pi/PiSpeedCamera/ProcessImage/2021-11-30_19:16:20Cropped.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
