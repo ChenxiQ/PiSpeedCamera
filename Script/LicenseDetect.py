@@ -37,6 +37,6 @@ def licenseDetect(captureTime, imagePath):
 
     return captureTime, croppedImagePath
 
-licenseDetect("2021-11-30_19:16:20", "/home/pi/PiSpeedCamera/TestImag/test_plate_2.jpg")
+licenseDetect("2021-11-30_19:16:22", "/home/pi/PiSpeedCamera/TestImag/test_plate_2.jpg")
 
 # tesseract /home/pi/PiSpeedCamera/ProcessImage/2021-11-30_19:16:20Cropped.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
