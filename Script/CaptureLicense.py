@@ -14,7 +14,7 @@ def captureLicense():
 
     style = "%Y-%m-%d_%H:%M:%S"
     captureTime = str(time.strftime(style, time.localtime(time.time())))
-    imagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "Original.jpg"
+    imagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_0Original.jpg"
 
     cv2.imwrite(imagePath, capturedImage)
 

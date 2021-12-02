@@ -3,18 +3,24 @@ import numpy as np
 import imutils
 
 def licenseDetect(captureTime, imagePath):
-    croppedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_1Cropped.jpg"
-    noiseReducedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_2NoiseReduced.jpg"
-    edgedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_3Edged.jpg"
-    threshedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_4Threshed.jpg"
-    finalImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_5Final.jpg"
+    noiseReducedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_1NoiseReduced.jpg"
+    edgedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_2Edged.jpg"
+    croppedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_3Cropped.jpg"
+    # threshedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_4Threshed.jpg"
+    # finalImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_5Final.jpg"
 
-    img = cv2.imread(imagePath)
+    img = cv2.imread(imagePath)[540:1080, 0:1920]
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     bfilter = cv2.bilateralFilter(gray, 11, 17, 17) # Noise reduction
     cv2.imwrite(noiseReducedImagePath, bfilter)
     edged = cv2.Canny(bfilter, 30, 200) # Edge detection
     cv2.imwrite(edgedImagePath, edged)
+
+    # kernel = np.ones((4, 19), np.uint8)
+    # img_edge1 = cv2.morphologyEx(edged, cv2.MORPH_CLOSE, kernel)
+    # img_edge2 = cv2.morphologyEx(img_edge1, cv2.MORPH_OPEN, kernel)
+    # cv2.imwrite("/home/pi/PiSpeedCamera/ProcessImage/e1.jpg", img_edge1)
+    # cv2.imwrite("/home/pi/PiSpeedCamera/ProcessImage/e2.jpg", img_edge2)
 
     keypoints = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     contours = imutils.grab_contours(keypoints)
@@ -37,14 +43,14 @@ def licenseDetect(captureTime, imagePath):
     cropped_image = gray[x1:x2+1, y1:y2+1]
     cv2.imwrite(croppedImagePath, cropped_image)
 
-    _, thresh_image = cv2.threshold(cropped_image, 127, 255, cv2.THRESH_BINARY)
-    cv2.imwrite(threshedImagePath, thresh_image)
+    # _, thresh_image = cv2.threshold(cropped_image, 127, 255, cv2.THRESH_BINARY)
+    # cv2.imwrite(threshedImagePath, thresh_image)
 
-    final = cv2.bilateralFilter(thresh_image, 11, 17, 17)
-    cv2.imwrite(finalImagePath, final)
+    # final = cv2.bilateralFilter(thresh_image, 11, 17, 17)
+    # cv2.imwrite(finalImagePath, final)
 
     return captureTime, croppedImagePath
 
-licenseDetect("2021-11-30_19:16:22", "/home/pi/PiSpeedCamera/PiCameraImage/2021-12-01_14:26:29.jpg")
+licenseDetect("2021-11-30_19:16:22", "/home/pi/PiSpeedCamera/PiCameraImage/2021-12-01_14:24:34.jpg")
 
-# tesseract /home/pi/PiSpeedCamera/ProcessImage/2021-11-30_19:16:22_1Cropped.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
+# tesseract /home/pi/PiSpeedCamera/TestImag/test_plate_4.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
