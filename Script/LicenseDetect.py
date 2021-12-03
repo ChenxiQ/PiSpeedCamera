@@ -46,6 +46,7 @@ def licenseDetect(captureTime, imagePath):
         equalized = cv2.equalizeHist(transformedGray)
         _, cropped = cv2.threshold(equalized, 60, 255, cv2.THRESH_BINARY)
         cv2.imwrite(croppedImagePath, cropped)
+        return captureTime, croppedImagePath
     
     except:
         return
