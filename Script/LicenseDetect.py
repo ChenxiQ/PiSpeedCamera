@@ -3,6 +3,7 @@ import numpy as np
 import imutils
 
 import glob
+from LicenseOCR import licenseOCR
 
 def sort(location):
     ySorted = sorted(location, key=(lambda x: x[1]))
@@ -40,7 +41,7 @@ def licenseDetect(captureTime, imagePath):
         originalPoints = np.float32(sort([location[0][0], location[1][0], location[2][0], location[3][0]]))
         mappedPoints = np.float32([[0, 0], [800, 0], [0, 400], [800, 400]])
         transformMatrix = cv2.getPerspectiveTransform(originalPoints, mappedPoints)
-        transformed = cv2.warpPerspective(img, transformMatrix, (800, 400))[80:320, 0:800]
+        transformed = cv2.warpPerspective(img, transformMatrix, (800, 400))[95:305, 0:800]
         cv2.imwrite(transformedPath, transformed)
         transformedGray = cv2.cvtColor(transformed, cv2.COLOR_BGR2GRAY)
         equalized = cv2.equalizeHist(transformedGray)
@@ -51,7 +52,8 @@ def licenseDetect(captureTime, imagePath):
     except:
         return
 
-for img in glob.glob(r"/home/pi/PiSpeedCamera/PiCameraImage/*.jpg"):
-    licenseDetect(img[37:-4], img)
+# for img in glob.glob(r"/home/pi/PiSpeedCamera/PiCameraImage/*.jpg"):
+#     capturedTime, croppedImagePath = licenseDetect(img[37:-4], img)
+#     licenseOCR(capturedTime, croppedImagePath)    
 
 # tesseract /home/pi/PiSpeedCamera/ProcessImage/2021-12-01_14:22:17_4Cropped.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
