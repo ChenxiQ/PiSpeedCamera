@@ -11,11 +11,14 @@ def sort(location):
     return xSorted0 + xSorted1
 
 def licenseDetect(captureTime, imagePath):
+    originalPath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_0Original.jpg"
     noiseReducedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_1NoiseReduced.jpg"
     edgedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_2Edged.jpg"
-    croppedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_3Cropped.jpg"
+    transformedPath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_3Transformed.jpg"
+    croppedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_4Cropped.jpg"
 
-    img = cv2.imread(imagePath)[540:1080, 0:1020]
+    img = cv2.imread(imagePath)[400:1024, :]
+    cv2.imwrite(originalPath, img)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     bfilter = cv2.bilateralFilter(gray, 11, 17, 17) # Noise reduction
     cv2.imwrite(noiseReducedImagePath, bfilter)
@@ -37,8 +40,12 @@ def licenseDetect(captureTime, imagePath):
         originalPoints = np.float32(sort([location[0][0], location[1][0], location[2][0], location[3][0]]))
         mappedPoints = np.float32([[0, 0], [800, 0], [0, 400], [800, 400]])
         transformMatrix = cv2.getPerspectiveTransform(originalPoints, mappedPoints)
-        transformed = cv2.warpPerspective(img, transformMatrix, (800, 400))
-        cv2.imwrite(croppedImagePath, transformed)
+        transformed = cv2.warpPerspective(img, transformMatrix, (800, 400))[80:320, 0:800]
+        cv2.imwrite(transformedPath, transformed)
+        transformedGray = cv2.cvtColor(transformed, cv2.COLOR_BGR2GRAY)
+        equalized = cv2.equalizeHist(transformedGray)
+        _, cropped = cv2.threshold(equalized, 60, 255, cv2.THRESH_BINARY)
+        cv2.imwrite(croppedImagePath, cropped)
     
     except:
         return
@@ -46,4 +53,4 @@ def licenseDetect(captureTime, imagePath):
 for img in glob.glob(r"/home/pi/PiSpeedCamera/PiCameraImage/*.jpg"):
     licenseDetect(img[37:-4], img)
 
-# tesseract /home/pi/PiSpeedCamera/ProcessImage/2021-11-30_19:16:22_3Cropped.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
+# tesseract /home/pi/PiSpeedCamera/ProcessImage/2021-12-01_14:22:17_4Cropped.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
