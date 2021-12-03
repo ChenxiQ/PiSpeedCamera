@@ -2,12 +2,20 @@ import cv2
 import numpy as np
 import imutils
 
+import glob
+
+def sort(location):
+    ySorted = sorted(location, key=(lambda x: x[1]))
+    xSorted0 = sorted(ySorted[0:2], key=(lambda x: x[0]))
+    xSorted1 = sorted(ySorted[2:4], key=(lambda x: x[0]))
+    return xSorted0 + xSorted1
+
 def licenseDetect(captureTime, imagePath):
     noiseReducedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_1NoiseReduced.jpg"
     edgedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_2Edged.jpg"
     croppedImagePath = "/home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_3Cropped.jpg"
 
-    img = cv2.imread(imagePath)[540:1080, 0:1920]
+    img = cv2.imread(imagePath)[540:1080, 0:1020]
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     bfilter = cv2.bilateralFilter(gray, 11, 17, 17) # Noise reduction
     cv2.imwrite(noiseReducedImagePath, bfilter)
@@ -19,24 +27,23 @@ def licenseDetect(captureTime, imagePath):
     contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
 
     location = None
-    for contour in contours:
-        approx = cv2.approxPolyDP(contour, 10, True)
-        if len(approx) == 4:
-            location = approx
-            break
+    try:
+        for contour in contours:
+            approx = cv2.approxPolyDP(contour, 10, True)
+            if len(approx) == 4:
+                location = approx
+                break
 
-    mask = np.zeros(gray.shape, np.uint8)
-    new_image = cv2.drawContours(mask, [location], 0,255, -1)
-    new_image = cv2.bitwise_and(img, img, mask=mask)
+        originalPoints = np.float32(sort([location[0][0], location[1][0], location[2][0], location[3][0]]))
+        mappedPoints = np.float32([[0, 0], [800, 0], [0, 400], [800, 400]])
+        transformMatrix = cv2.getPerspectiveTransform(originalPoints, mappedPoints)
+        transformed = cv2.warpPerspective(img, transformMatrix, (800, 400))
+        cv2.imwrite(croppedImagePath, transformed)
+    
+    except:
+        return
 
-    (x, y) = np.where(mask==255)
-    (x1, y1) = (np.min(x), np.min(y))
-    (x2, y2) = (np.max(x), np.max(y))
-    cropped_image = gray[x1:x2+1, y1:y2+1]
-    cv2.imwrite(croppedImagePath, cropped_image)
+for img in glob.glob(r"/home/pi/PiSpeedCamera/PiCameraImage/*.jpg"):
+    licenseDetect(img[37:-4], img)
 
-    return captureTime, croppedImagePath
-
-licenseDetect("2021-11-30_19:16:22", "/home/pi/PiSpeedCamera/PiCameraImage/2021-12-01_14:26:44.jpg")
-
-# tesseract /home/pi/PiSpeedCamera/TestImag/test_plate_4.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
+# tesseract /home/pi/PiSpeedCamera/ProcessImage/2021-11-30_19:16:22_3Cropped.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
