@@ -1,5 +1,7 @@
 import os
 import re
+import sqlite3 as lite
+import sys
 
 def licenseOCR(captureTime, imagePath):
     print("OCR Image", imagePath)
@@ -15,3 +17,4 @@ def licenseOCR(captureTime, imagePath):
         detectedPlate = re.sub(u"([^\u0030-\u0039\u0041-\u005a])", "", OCRMsg)
     
     print("OCR Result:", detectedPlate)
+    return detectedPlate

@@ -52,8 +52,10 @@ def licenseDetect(captureTime, imagePath):
     except:
         return
 
-# for img in glob.glob(r"/home/pi/PiSpeedCamera/PiCameraImage/*.jpg"):
-#     capturedTime, croppedImagePath = licenseDetect(img[37:-4], img)
-#     licenseOCR(capturedTime, croppedImagePath)    
+################################# DEMO CODE #################################
 
-# tesseract /home/pi/PiSpeedCamera/ProcessImage/2021-12-01_14:22:17_4Cropped.jpg /home/pi/PiSpeedCamera/ProcessImage/ocr -l eng -psm 7
+for img in glob.glob(r"/home/pi/PiSpeedCamera/PiCameraImage/*.jpg"):
+    capturedTime, croppedImagePath = licenseDetect(img[37:-4], img)
+    licenseOCR(capturedTime, croppedImagePath)
+
+#############################################################################

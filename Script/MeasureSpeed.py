@@ -2,7 +2,7 @@ import time
 from MeasureDistance import measureDistance
 
 def measureSpeed():
-    SENSOR_DIS = 18
+    SENSOR_DIS = 57
     LEFT_TRIG_PIN = 23
     LEFT_ECHO_PIN = 24
     RIGHT_TRIG_PIN = 5
