@@ -1,7 +1,5 @@
 import os
 import re
-import sqlite3 as lite
-import sys
 
 def licenseOCR(captureTime, imagePath):
     print("OCR Image", imagePath)
