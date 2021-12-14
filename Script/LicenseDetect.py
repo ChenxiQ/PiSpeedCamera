@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import imutils
 
-### import used for demo code ###
+### import used for test code ###
 import glob
 from LicenseOCR import licenseOCR
 #################################
@@ -56,7 +56,7 @@ def licenseDetect(captureTime, imagePath):
     except:
         return
 
-################################# DEMO CODE #################################
+################################# TEST CODE #################################
 
 # for img in glob.glob(r"/home/pi/PiSpeedCamera/PiCameraImage/*.jpg"):
 #     capturedTime, croppedImagePath = licenseDetect(img[37:-4], img)
