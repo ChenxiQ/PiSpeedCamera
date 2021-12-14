@@ -49,9 +49,9 @@ def measureSpeed():
     print("#######################################################")
     print("################## Calculating Speed ##################")
 
-    speedCM = SENSOR_DIS / (rightDetectedTime - leftDetectedTime)
-    speedKM = speedCM * 0.036
-    speedMI = speedCM * 0.022369
+    speedCM = round(SENSOR_DIS / (rightDetectedTime - leftDetectedTime), 2)
+    speedKM = round(speedCM * 0.036, 2)
+    speedMI = round(speedCM * 0.022369, 2)
     print("Measured Speed:", speedCM, "cm/s")
     print("Measured Speed:", speedKM, "km/h")
     print("Measured Speed:", speedMI, "mile/h")
