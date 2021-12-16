@@ -1,3 +1,10 @@
+"""
+    AddOCRToDatabase.py
+    Created by Chenxi Qian
+
+    add speed and plate information into website database
+"""
+
 import sqlite3
 
 def addOCRToDatabase(speed, plate):

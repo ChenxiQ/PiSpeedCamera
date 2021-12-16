@@ -1,8 +1,18 @@
+"""
+    MeasureSpeed.py
+    Created by Chenxi Qian
+
+    measure the speed of a moving car using two HC-SR04 Ultrasonic Sensors
+"""
+
 import time
 from MeasureDistance import measureDistance
 
 def measureSpeed():
+    # distance between two Ultrasonic Sensors in cm
     SENSOR_DIS = 57
+
+    # define GPIO pins
     LEFT_TRIG_PIN = 23
     LEFT_ECHO_PIN = 24
     RIGHT_TRIG_PIN = 5
@@ -16,8 +26,9 @@ def measureSpeed():
         time.sleep(0.001)
         measureDistance(RIGHT_TRIG_PIN, RIGHT_ECHO_PIN)
 
-    initDistanceLeft = measureDistance(LEFT_TRIG_PIN, LEFT_ECHO_PIN)[1]
-    initDistanceRight = measureDistance(RIGHT_TRIG_PIN, RIGHT_ECHO_PIN)[1]
+    # calibrate and get initial distance
+    _, initDistanceLeft = measureDistance(LEFT_TRIG_PIN, LEFT_ECHO_PIN)
+    _, initDistanceRight = measureDistance(RIGHT_TRIG_PIN, RIGHT_ECHO_PIN)
 
     print("#################### Start Program ####################")
     print("############### Measure Initial Distance ##############")
@@ -25,6 +36,7 @@ def measureSpeed():
     print("Right Initial: ", initDistanceRight)
     print("#######################################################")
 
+    # start timer when the car reached the left sensor
     leftDetected = False
     leftDetectedTime = 0
     while not leftDetected:
@@ -36,6 +48,7 @@ def measureSpeed():
 
     print("Left Detected! Time:", leftDetectedTime, "Distance:", measuredDistanceLeft)
 
+    # stop timer when the car reached the right sensor
     rightDetected = False
     rightDetectedTime = 0
     while not rightDetected:
@@ -49,6 +62,7 @@ def measureSpeed():
     print("#######################################################")
     print("################## Calculating Speed ##################")
 
+    # calculate the speed of the car
     speedCM = round(SENSOR_DIS / (rightDetectedTime - leftDetectedTime), 2)
     speedKM = round(speedCM * 0.036, 2)
     speedMI = round(speedCM * 0.022369, 2)
