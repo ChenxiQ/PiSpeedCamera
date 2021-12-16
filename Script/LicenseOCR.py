@@ -1,7 +1,15 @@
+"""
+    LicenseOCR.py
+    Created by Chenxi Qian
+
+    detecting license plate content using Tesseract OCR engine
+"""
+
 import os
 import re
 
 def licenseOCR(captureTime, imagePath):
+    # execute tesseract command
     print("OCR Image", imagePath)
     cmd = "tesseract " + imagePath + " /home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_5OCRResult" + " -l eng -psm 7 >> /dev/null"
     os.system(cmd)
