@@ -9,8 +9,11 @@ import os
 import re
 
 def licenseOCR(captureTime, imagePath):
+    # print("OCR Image", imagePath)
+
     # execute tesseract command
     print("OCR Image", imagePath)
+
     cmd = "tesseract " + imagePath + " /home/pi/PiSpeedCamera/ProcessImage/" + captureTime + "_5OCRResult" + " -l eng -psm 7 >> /dev/null"
     os.system(cmd)
 
