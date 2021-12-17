@@ -1,6 +1,6 @@
 """
     AddOCRToDatabase.py
-    Created by Chenxi Qian
+    Created by Chenxi Qian and Kuan Lu
 
     add speed and plate information into website database
 """

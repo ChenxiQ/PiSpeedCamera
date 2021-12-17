@@ -1,6 +1,6 @@
 """
     main.py
-    Created by Chenxi Qian
+    Created by Chenxi Qian and Kuan Lu
 
     main function to start the program
     currently needs one start for each speed test
